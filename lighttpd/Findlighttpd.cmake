@@ -1,13 +1,7 @@
 #
-# Copyright 2019, Data61
-# Commonwealth Scientific and Industrial Research Organisation (CSIRO)
-# ABN 41 687 119 230.
+# Copyright 2019, Data61, CSIRO (ABN 41 687 119 230)
 #
-# This software may be distributed and modified according to the terms of
-# the BSD 2-Clause license. Note that NO WARRANTY is provided.
-# See "LICENSE_BSD2.txt" for details.
-#
-# @TAG(DATA61_BSD)
+# SPDX-License-Identifier: BSD-2-Clause
 #
 
 set(LIGHTTPD_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "")
@@ -16,7 +10,13 @@ set(LIGHTTPD_RUN_SCRIPT "${LIGHTTPD_DIR}/lighttpd.sh" CACHE STRING "")
 mark_as_advanced(LIGHTTPD_DIR LIGHTTPD_CONF LIGHTTPD_RUN_SCRIPT)
 
 macro(lighttpd_build_server outfile)
-    string(REGEX MATCH "^(.+)\-$" config_host "${CROSS_COMPILER_PREFIX}" )
+    string(
+        REGEX
+            MATCH
+            "^(.+)\-$"
+            config_host
+            "${CROSS_COMPILER_PREFIX}"
+    )
     set(config_host "${CMAKE_MATCH_1}")
     include(ExternalProject)
     # Static compile of pcre library
@@ -32,12 +32,18 @@ macro(lighttpd_build_server outfile)
         SOURCE_DIR
         ${CMAKE_CURRENT_BINARY_DIR}/libprce-prefix/src/libpcre
         CONFIGURE_COMMAND
-        ./configure --host=${config_host} CC=${CMAKE_C_COMPILER} AR=${CMAKE_AR} STRIP=${DCMAKE_STRIP}
-        RANLIB=${CMAKE_RANLIB} --prefix=${CMAKE_CURRENT_BINARY_DIR}/libpcre/_install
+        ./configure
+        --host=${config_host}
+        CC=${CMAKE_C_COMPILER}
+        AR=${CMAKE_AR}
+        STRIP=${DCMAKE_STRIP}
+        RANLIB=${CMAKE_RANLIB}
+        --prefix=${CMAKE_CURRENT_BINARY_DIR}/libpcre/_install
         BUILD_COMMAND
         make
         INSTALL_COMMAND
-        make install
+        make
+        install
     )
     # Force static linking of pthread symbols
     set(linker_flags -static\ -u\ pthread_mutex_lock\ -u\ pthread_mutex_unlock\ -lpthread)
@@ -53,7 +59,10 @@ macro(lighttpd_build_server outfile)
         GIT_TAG
         lighttpd-1.4.55
         PATCH_COMMAND
-        ${GIT_EXECUTABLE} apply ${LIGHTTPD_DIR}/lighttpd_cmake.patch ${LIGHTTPD_DIR}/lemon_cmake.patch
+        ${GIT_EXECUTABLE}
+        apply
+        ${LIGHTTPD_DIR}/lighttpd_cmake.patch
+        ${LIGHTTPD_DIR}/lemon_cmake.patch
         BINARY_DIR
         ${CMAKE_CURRENT_BINARY_DIR}/lighttpd
         BUILD_ALWAYS

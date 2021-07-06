@@ -1,13 +1,7 @@
 #
-# Copyright 2019, Data61
-# Commonwealth Scientific and Industrial Research Organisation (CSIRO)
-# ABN 41 687 119 230.
+# Copyright 2019, Data61, CSIRO (ABN 41 687 119 230)
 #
-# This software may be distributed and modified according to the terms of
-# the BSD 2-Clause license. Note that NO WARRANTY is provided.
-# See "LICENSE_BSD2.txt" for details.
-#
-# @TAG(DATA61_BSD)
+# SPDX-License-Identifier: BSD-2-Clause
 #
 
 cmake_minimum_required(VERSION 3.7.2)
@@ -31,7 +25,7 @@ include(application_settings)
 if("${PLATFORM}" STREQUAL "")
     set(PLATFORM "exynos5422")
 endif()
-if (NOT "${PLATFORM}" IN_LIST supported)
+if(NOT "${PLATFORM}" IN_LIST supported)
     message(FATAL_ERROR "PLATFORM: ${PLATFORM} not supported. Supported: ${supported}")
 endif()
 if("${PLATFORM}" STREQUAL "exynos5422")
@@ -39,13 +33,18 @@ if("${PLATFORM}" STREQUAL "exynos5422")
     set(KernelARMPlatform exynos5422 CACHE STRING "" FORCE)
 endif()
 if("${PLATFORM}" STREQUAL "qemu-arm-virt")
-    if (MULTI_VM_LAN)
-        message(FATAL_ERROR "The Multi-VM configuration is not supported on the qemu-arm-virt platform")
+    if(MULTI_VM_LAN)
+        message(
+            FATAL_ERROR "The Multi-VM configuration is not supported on the qemu-arm-virt platform"
+        )
     endif()
     set(KernelPlatform qemu-arm-virt CACHE STRING "" FORCE)
     set(KernelARMPlatform qemu-arm-virt CACHE STRING "" FORCE)
     set(QEMU_MEMORY "2048")
-    set(qemu_sim_extra_args "-netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device virtio-net,netdev=mynet0,mac=52:55:00:d1:55:01")
+    set(
+        qemu_sim_extra_args
+        "-netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no -device virtio-net,netdev=mynet0,mac=52:55:00:d1:55:01"
+    )
     set(KernelArmCPU cortex-a53 CACHE STRING "" FORCE)
     set(KernelArmHypervisorSupport ON CACHE BOOL "" FORCE)
 endif()
